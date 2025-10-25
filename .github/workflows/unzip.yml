@@ -5,9 +5,13 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   unzip:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -15,13 +19,12 @@ jobs:
       - name: Unzip project files
         run: |
           mkdir app
-          unzip anti_tamper_repo_updated.zip -d app
+          unzip anti_tamper_repo_update.zip -d app
 
       - name: Commit unzipped files
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add app
-          git commit -m "Unzipped project files" || echo "No changes to commit"
+          git commit -m "Unzipped project files"
           git push
-          
