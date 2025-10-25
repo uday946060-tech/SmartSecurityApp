@@ -1,30 +1,28 @@
 name: Unzip Project
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
+on: [push]
 
 jobs:
   unzip:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Unzip project files
-        run: |
-          mkdir app
-          unzip anti_tamper_repo_update.zip -d app
+      - name: List files in repo
+        run: ls -al
 
-      - name: Commit unzipped files
+      - name: Unzip all zip files
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add app
-          git commit -m "Unzipped project files"
-          git push
+          mkdir -p output
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              echo "Unzipping $file..."
+              unzip -o "$file" -d output
+            else
+              echo "⚠️ No ZIP files found in repository."
+            fi
+          done
+
+      - name: Verify output
+        run: ls -R output
+        
